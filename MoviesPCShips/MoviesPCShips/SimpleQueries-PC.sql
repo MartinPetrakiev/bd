@@ -104,3 +104,20 @@ where pc.model not in (
 	select p.model from product as p
 	where p.type = 'PC'
 );
+
+---|5| ---
+--5.1
+select avg(speed) as AvgSpeed from pc;
+--5.2
+select p.maker, avg(screen) as AvgScreen from product as p
+inner join laptop as lpt on lpt.model = p.model
+group by p.maker;
+--5.3
+select avg(speed) as AvgSpeed from laptop
+where price > 1000;
+--5.4
+select p.maker, avg(pc.price) as AvgPrice from pc
+inner join product as p on p.model = pc.model
+where p.maker = 'A'
+group by p.maker;
+--5.5
