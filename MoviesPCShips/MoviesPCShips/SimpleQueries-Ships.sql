@@ -105,3 +105,43 @@ inner join CLASSES as c on c.CLASS = shp.CLASS
 inner join OUTCOMES as oc on oc.SHIP = shp.NAME
 inner join BATTLES as b on b.NAME = oc.BATTLE
 where b.NAME = 'North Atlantic';
+
+--- |5| ---
+--5.1
+select count(c.CLASS) as NO_Classes from CLASSES as c
+where c.TYPE = 'bb'
+group by c.TYPE;
+--5.2
+select c.CLASS, avg(c.NUMGUNS) as avgGuns from CLASSES as c
+where c.TYPE = 'bb'
+group by c.CLASS;
+--5.3
+select avg(c.NUMGUNS) as avgGuns from CLASSES as c
+where c.TYPE = 'bb'
+group by c.TYPE;
+--5.4
+select c.CLASS, min(shp.LAUNCHED) as FirstYear, max(shp.LAUNCHED) 
+from CLASSES as c
+inner join SHIPS as shp on shp.CLASS = c.CLASS
+group by c.CLASS;
+--5.5
+select c.CLASS, count(*) as NO_sunk from CLASSES as c
+inner join SHIPS as shp on shp.CLASS = c.CLASS
+inner join OUTCOMES as oc on oc.SHIP = shp.NAME
+where oc.RESULT = 'sunk'
+group by c.CLASS;
+--5.6
+select cs_reduced.CLASS, count(*) as NO_sunk from (
+	select c.CLASS from CLASSES as c
+	inner join SHIPS as shp on c.CLASS = shp.CLASS
+	group by c.CLASS
+	having count(*) > 2
+) as cs_reduced
+inner join SHIPS as shp2 on shp2.CLASS = cs_reduced.CLASS
+inner join OUTCOMES as oc on oc.SHIP = shp2.NAME
+where oc.RESULT = 'sunk'
+group by cs_reduced.CLASS
+--5.7
+select c.COUNTRY, avg(c.BORE) as avg_bore from CLASSES as c
+inner join SHIPS as shp on shp.CLASS = c.CLASS
+group by c.COUNTRY;

@@ -121,3 +121,35 @@ inner join product as p on p.model = pc.model
 where p.maker = 'A'
 group by p.maker;
 --5.5
+select p.maker, avg(g.price) as AvgPrice from product as p
+inner join (
+	select pc.model, pc.price from pc
+	union all
+	select lpt.model, lpt.price from laptop as lpt
+) as g on g.model = p.model
+where p.maker = 'B'
+group by p.maker;
+--5.6
+select speed, avg(price) as AvgPrice from pc
+group by speed;
+--5.7
+select p.maker, count(pc.code) as number_of_pc from product as p
+inner join pc on pc.model = p.model
+group by p.maker
+having count(distinct pc.code) >= 3;
+--5.8
+select top 1 p.maker, max(pc.price) as max_price from product as p
+inner join pc on pc.model = p.model
+group by p.maker;
+--5.9
+select pc.speed, avg(pc.price) as AvgPrice from pc
+where pc.speed > 800
+group by pc.speed;
+-- 5.10
+select p.maker, avg(pc.hd) as AvgHDD from product as p
+inner join pc on pc.model = p.model
+where p.maker in (
+	select distinct p2.maker from product as p2
+	inner join printer as prt on prt.model = p2.model
+)
+group by p.maker;
