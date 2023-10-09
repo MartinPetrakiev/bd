@@ -145,3 +145,30 @@ group by cs_reduced.CLASS
 select c.COUNTRY, avg(c.BORE) as avg_bore from CLASSES as c
 inner join SHIPS as shp on shp.CLASS = c.CLASS
 group by c.COUNTRY;
+
+---|6|---
+--6.1
+select distinct oc.SHIP from OUTCOMES as oc
+where oc.SHIP like 'C%' or oc.SHIP like'K%'
+--6.2
+select shp.NAME, c.COUNTRY 
+from SHIPS as shp
+inner join CLASSES as c on shp.CLASS = c.CLASS 
+where shp.NAME not in (select SHIP from OUTCOMES where RESULT = 'sunk');
+--6.3
+select g.country, sum(g.num_sunk_ships) as num_sunk_ships
+from (
+	select c.COUNTRY as country, count(oc.SHIP) as num_sunk_ships 
+	from CLASSES as c
+	left join SHIPS on c.CLASS = SHIPS.CLASS
+	left join OUTCOMES as oc on SHIPS.NAME = oc.SHIP
+	where oc.RESULT = 'sunk'
+	group by c.COUNTRY
+	union
+	select c.COUNTRY as country, 0 as num_sunk_ships
+	from CLASSES as c
+	left join SHIPS ON c.CLASS = SHIPS.CLASS
+	where SHIPS.NAME is null
+	   or SHIPS.NAME not in (select SHIP from OUTCOMES where RESULT = 'sunk')
+) as g
+group by g.country;

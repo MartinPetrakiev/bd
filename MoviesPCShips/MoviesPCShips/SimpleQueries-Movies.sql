@@ -78,3 +78,71 @@ select distinct ms.NAME, NULL AS movietitle from MOVIESTAR as ms
 where ms.NAME not in (
 	select distinct st.STARNAME from STARSIN as st
 );
+
+---|6|---
+--6.1
+select TITLE, YEAR, LENGTH from MOVIE 
+where (LENGTH > 120 or LENGTH is NULL) and YEAR < 2000;
+--6.2
+select NAME, GENDER from MOVIESTAR
+where NAME like 'J%' and BIRTHDATE > 1948
+order by NAME desc;
+--6.3
+select st.NAME, count(distinct si.STARNAME) as num_actors from STUDIO as st
+inner join MOVIE as mv on mv.STUDIONAME = st.NAME
+inner join STARSIN as si on si.MOVIETITLE = mv.TITLE
+group by st.NAME;
+--6.4
+select si.STARNAME, count(si.MOVIETITLE) as num_movies from STARSIN as si
+group by si.STARNAME;
+--6.5
+select st.NAME as studioname, mv.TITLE, mv.YEAR from STUDIO as st
+inner join (
+    select STUDIONAME, MAX(YEAR) AS MaxYear
+    from MOVIE
+    group by STUDIONAME
+) as LatestYearPerStudio on st.NAME = LatestYearPerStudio.STUDIONAME
+inner join MOVIE as mv ON LatestYearPerStudio.STUDIONAME = mv.STUDIONAME 
+and LatestYearPerStudio.MaxYear = mv.YEAR
+order by mv.studioname desc;
+--6.6
+select top 1 ms.NAME from MOVIESTAR as ms
+where ms.GENDER = 'M'
+order by ms.BIRTHDATE desc;
+--6.7
+with ActorMovieCounts as (
+	select
+		mv.STUDIONAME AS studioname,
+		si.STARNAME AS starname,
+		count(*) AS count_movies
+	from STARSIN as si
+	inner join
+		MOVIE as mv on si.MOVIETITLE = mv.TITLE and si.MOVIEYEAR = mv.YEAR
+	group by si.STARNAME, mv.STUDIONAME
+),
+MaxMovieCounts as (
+    select 
+		studioname, 
+		max(count_movies) as num_movies
+    from ActorMovieCounts
+    group by studioname
+)
+select 
+	AMC.studioname, 
+	AMC.starname, 
+	AMC.count_movies as num_movies
+from ActorMovieCounts as AMC
+inner join
+    MaxMovieCounts as MMC ON 
+	AMC.StudioName = MMC.StudioName and AMC.count_movies = MMC.num_movies;
+--6.8
+select 
+	mv.TITLE as movietitle, 
+	mv.YEAR as movieyear, 
+	count(si.STARNAME) as num_actors
+from
+	MOVIE as mv
+inner join
+	STARSIN as si on si.MOVIETITLE = mv.TITLE
+group by mv.TITLE, mv.YEAR
+having count(si.STARNAME) > 2;
