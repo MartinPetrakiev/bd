@@ -153,3 +153,48 @@ where p.maker in (
 	inner join printer as prt on prt.model = p2.model
 )
 group by p.maker;
+
+---|6|---
+--6.1
+select lpt.model, lpt.code, lpt.screen from laptop as lpt
+where lpt.screen in (11,15);
+--6.2
+with CheapestLaptops as (
+	select p.maker, min(lpt.price) as min_price
+	from laptop as lpt
+	inner join product as p on lpt.model = p.model
+	group by p.maker
+)
+select distinct pc.model from pc
+join product as p2 on pc.model = p2.model
+where p2.maker in (
+	select maker from CheapestLaptops
+) and pc.price < (
+	select min_price from CheapestLaptops
+	where maker = p2.maker
+);
+--6.3
+with CheapestLaptops as (
+	select p.maker, min(lpt.price) as min_price
+	from laptop as lpt
+	inner join product as p on lpt.model = p.model
+	group by p.maker
+)
+select pc.model, avg(pc.price) as avg_price from pc
+join product as p2 on pc.model = p2.model
+inner join CheapestLaptops as CL on p2.maker = CL.maker
+where p2.maker in (
+	select maker from CheapestLaptops
+)
+group by pc.model, min_price
+having avg(pc.price) < CL.min_price;
+--6.4
+select pc.code, p1.maker, count(*) as num_pc_higher_price
+from product as p1
+inner join pc on p1.model = pc.model
+left join pc as pc1 on pc1.model = pc.model
+group by
+    pc.code, p1.maker
+having
+    count(*) = sum(case when pc1.price >= pc.price then 1 else 0 end);
+
