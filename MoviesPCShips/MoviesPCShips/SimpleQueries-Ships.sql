@@ -230,6 +230,31 @@ WinningShips AS (
 select count(*) as num_ships
 from DamagedShips as DS
 join WinningShips as WS on DS.SHIP = WS.SHIP;
-
+--6.8
+with DamagedShips as (
+    select distinct oc.SHIP
+    from OUTCOMES as oc
+    where oc.RESULT = 'damaged'
+),
+WinningShips AS (
+    select distinct oc.SHIP
+    from OUTCOMES as oc
+    where oc.RESULT = 'ok'
+),
+LargerBattleByShips as (
+    select distinct oc.SHIP as LargerBattleByShips
+    from OUTCOMES as oc
+    where oc.RESULT = 'ok'
+    and exists (
+        select 1
+        from OUTCOMES as oc2
+        where oc2.BATTLE = oc.BATTLE
+        and oc2.SHIP <> oc.SHIP
+    )
+)
+select DS.SHIP as ship_name
+from DamagedShips as DS
+join WinningShips as WS on DS.SHIP = WS.SHIP
+join LargerBattleByShips as LBS on WS.SHIP = LBS.LargerBattleByShips;
 	
 
