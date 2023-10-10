@@ -172,3 +172,64 @@ from (
 	   or SHIPS.NAME not in (select SHIP from OUTCOMES where RESULT = 'sunk')
 ) as g
 group by g.country;
+--6.4
+select o.BATTLE from OUTCOMES as o
+group by o.BATTLE
+having count(o.SHIP) > (
+	select count(oc.SHIP)
+	from OUTCOMES as oc
+	where oc.BATTLE = 'Guadalcanal'
+);
+--6.5
+select o.BATTLE from OUTCOMES as o
+inner join SHIPS as shp on o.SHIP = o.SHIP
+inner join CLASSES as c on c.CLASS = shp.CLASS
+group by o.BATTLE
+having count(c.COUNTRY) > (
+	select count(c2.COUNTRY)
+	from OUTCOMES as oc
+	inner join SHIPS as shp2 on oc.SHIP = oc.SHIP
+	inner join CLASSES as c2 on c2.CLASS = shp2.CLASS
+	where oc.BATTLE = 'Surigao Strait'
+);
+--6.6
+with MinDisplacement as (
+	select min(DISPLACEMENT) as displacement
+	from CLASSES
+),
+MaxGuns as (
+	select CLASS, max(NUMGUNS) as numGuns
+	from CLASSES
+	group by CLASS
+	having min(DISPLACEMENT) = (
+			select top 1 displacement from MinDisplacement
+		)
+)
+select 
+	shp.NAME,
+	c.DISPLACEMENT,
+	MG.numGuns
+from SHIPS as shp
+inner join CLASSES as c on shp.CLASS = c.CLASS
+inner join MaxGuns as MG on shp.CLASS = MG.CLASS
+group by shp.NAME, c.DISPLACEMENT, MG.numGuns
+having min(c.DISPLACEMENT) = (
+			select top 1 displacement from MinDisplacement
+		)
+--6.7
+with DamagedShips as (
+    select distinct oc.SHIP
+    from OUTCOMES as oc
+    where oc.RESULT = 'damaged'
+),
+WinningShips AS (
+    select distinct oc.SHIP
+    from OUTCOMES as oc
+    where oc.RESULT = 'ok'
+)
+select count(*) as num_ships
+from DamagedShips as DS
+join WinningShips as WS on DS.SHIP = WS.SHIP;
+
+	
+
