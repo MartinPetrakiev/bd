@@ -196,3 +196,39 @@ inner join pc on p1.model = pc.model
 left join pc as pc1 on pc1.model = pc.model
 group by pc.code, p1.maker;
 
+---|7|--
+--7.4
+insert into product
+	values('C', '1100', 'PC');
+insert into pc
+	values(12,'1100',2400,2,500,'52x',299);
+--7.5
+delete from pc where model = '1100';
+--7.6
+delete laptop from laptop
+left join product as p on laptop.model = p.model
+where p.maker not in (
+    select distinct p2.maker from printer as prt
+	inner join product as p2 on prt.model = p2.model
+);
+delete product from product as p
+where type = 'Laptop'
+and p.maker not in (
+    select distinct p2.maker from printer as prt
+	inner join product as p2 on prt.model = p2.model
+);
+--7.7
+update product
+set maker = 'A'
+where maker = 'B'
+--7.8
+update pc
+set price = price / 2;
+update pc
+set hd = hd + 20;
+--7.9
+update laptop
+set screen = screen + 1
+from laptop
+inner join product as p on p.model = p.model
+where p.maker = 'B';

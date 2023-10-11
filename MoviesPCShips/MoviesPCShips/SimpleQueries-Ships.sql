@@ -257,4 +257,54 @@ from DamagedShips as DS
 join WinningShips as WS on DS.SHIP = WS.SHIP
 join LargerBattleByShips as LBS on WS.SHIP = LBS.LargerBattleByShips;
 	
+---|7|---
+--7.10
+insert into CLASSES (CLASS, TYPE, COUNTRY, NUMGUNS, BORE, DISPLACEMENT)
+values('Nelson','bb','Gt.Britain',9,16,34000);
 
+if exists (select 1 from SHIPS where NAME = 'Rodney')
+begin
+	insert into SHIPS (NAME, CLASS, LAUNCHED)
+	values
+		(
+			'Rodney 1927',
+			'Nelson',
+			1927
+		)
+end
+else 
+begin
+	insert into SHIPS (NAME, CLASS, LAUNCHED)
+	values
+		(
+			'Rodney',
+			'Nelson',
+			1927
+		)
+end;
+if exists (select 1 from SHIPS where NAME = 'Nelson')
+begin
+	insert into SHIPS (NAME, CLASS, LAUNCHED)
+	values
+		(
+			'Nelson 1927',
+			'Nelson',
+			1927
+		)
+end
+else 
+begin
+	insert into SHIPS (NAME, CLASS, LAUNCHED)
+	values
+		(
+			'Nelson',
+			'Nelson',
+			1927
+		)
+end;
+--7.11
+--delete SHIPS from SHIPS as shp
+--left join OUTCOMES as oc on shp.NAME = oc.SHIP
+--where oc.RESULT = 'sunk';
+
+--select * from SHIPS;

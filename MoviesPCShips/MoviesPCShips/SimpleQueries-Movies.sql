@@ -146,3 +146,19 @@ inner join
 	STARSIN as si on si.MOVIETITLE = mv.TITLE
 group by mv.TITLE, mv.YEAR
 having count(si.STARNAME) > 2;
+
+--|7|--
+--7.1
+insert into MOVIESTAR
+	values ('Nicole Kidman', null, 'F', '1967-06-20');
+--7.2
+update MOVIE
+set PRODUCERC# = NULL
+where PRODUCERC# in (
+	select CERT# from MOVIEEXEC 
+	where NETWORTH < 30000000
+);
+delete from MOVIEEXEC where NETWORTH < 30000000;
+--7.3
+delete MOVIESTAR from MOVIESTAR
+where ADDRESS is null;
