@@ -189,12 +189,10 @@ where p2.maker in (
 group by pc.model, min_price
 having avg(pc.price) < CL.min_price;
 --6.4
-select pc.code, p1.maker, count(*) as num_pc_higher_price
+select pc.code, p1.maker, 
+sum(case when pc1.price >= pc.price then 1 else 0 end) as num_pc_higher_price
 from product as p1
 inner join pc on p1.model = pc.model
 left join pc as pc1 on pc1.model = pc.model
-group by
-    pc.code, p1.maker
-having
-    count(*) = sum(case when pc1.price >= pc.price then 1 else 0 end);
+group by pc.code, p1.maker;
 
