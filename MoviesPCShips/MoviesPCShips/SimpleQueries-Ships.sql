@@ -303,8 +303,22 @@ begin
 		)
 end;
 --7.11
---delete SHIPS from SHIPS as shp
---left join OUTCOMES as oc on shp.NAME = oc.SHIP
---where oc.RESULT = 'sunk';
+declare @LOCAL_SUNKEN_SHIPS TABLE(SHIP VARCHAR(50) NOT NULL)
 
---select * from SHIPS;
+insert into @LOCAL_SUNKEN_SHIPS
+select SHIP from OUTCOMES 
+where RESULT = 'sunk';
+
+delete from OUTCOMES
+where SHIP in (
+	select SHIP from @LOCAL_SUNKEN_SHIPS
+);
+delete from SHIPS
+where NAME in (
+	select SHIP from @LOCAL_SUNKEN_SHIPS
+);
+--7.12
+update CLASSES
+set BORE = BORE * 2.54;
+update CLASSES
+set DISPLACEMENT = DISPLACEMENT * 1.1;
