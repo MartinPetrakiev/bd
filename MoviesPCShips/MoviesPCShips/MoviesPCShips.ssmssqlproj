@@ -19,6 +19,24 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
+        <FileNode Name="Define_schema_relation_1.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MARTINPETRAKIEV:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MARTINPETRAKIEV</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Define_schema_relation_1.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Define_schema_relation_2.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MARTINPETRAKIEV:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MARTINPETRAKIEV</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Define_schema_relation_2.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Flights.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MARTINPETRAKIEV:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MARTINPETRAKIEV</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Flights.sql</FullPath>
+        </FileNode>
         <FileNode Name="Movies-MSSQL.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MARTINPETRAKIEV:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>MARTINPETRAKIEV</AssociatedConnSrvName>
