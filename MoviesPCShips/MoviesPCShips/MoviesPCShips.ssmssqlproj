@@ -37,6 +37,12 @@
           <AssociatedConnUserName />
           <FullPath>Flights.sql</FullPath>
         </FileNode>
+        <FileNode Name="FurnitureCompany-MSSQL.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MARTINPETRAKIEV:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MARTINPETRAKIEV</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>FurnitureCompany-MSSQL.sql</FullPath>
+        </FileNode>
         <FileNode Name="Movies-MSSQL.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MARTINPETRAKIEV:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>MARTINPETRAKIEV</AssociatedConnSrvName>
@@ -72,6 +78,12 @@
           <AssociatedConnSrvName>MARTINPETRAKIEV</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SimpleQueries-Ships.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Triggers.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MARTINPETRAKIEV:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MARTINPETRAKIEV</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Triggers.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

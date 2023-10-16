@@ -126,3 +126,6 @@ VALUES
 
 
 
+select * from FLIGHT;
+select * from AGENCY;
+select * from BOOKING;
