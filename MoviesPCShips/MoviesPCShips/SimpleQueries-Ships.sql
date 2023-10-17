@@ -265,42 +265,22 @@ values('Nelson','bb','Gt.Britain',9,16,34000);
 if exists (select 1 from SHIPS where NAME = 'Rodney')
 begin
 	insert into SHIPS (NAME, CLASS, LAUNCHED)
-	values
-		(
-			'Rodney 1927',
-			'Nelson',
-			1927
-		)
+	values('Rodney 1927','Nelson',1927)
 end
 else 
 begin
 	insert into SHIPS (NAME, CLASS, LAUNCHED)
-	values
-		(
-			'Rodney',
-			'Nelson',
-			1927
-		)
+	values('Rodney','Nelson',1927)
 end;
 if exists (select 1 from SHIPS where NAME = 'Nelson')
 begin
 	insert into SHIPS (NAME, CLASS, LAUNCHED)
-	values
-		(
-			'Nelson 1927',
-			'Nelson',
-			1927
-		)
+	values('Nelson 1927','Nelson',1927)
 end
 else 
 begin
 	insert into SHIPS (NAME, CLASS, LAUNCHED)
-	values
-		(
-			'Nelson',
-			'Nelson',
-			1927
-		)
+	values('Nelson','Nelson',1927)
 end;
 --7.11
 declare @LOCAL_SUNKEN_SHIPS TABLE(SHIP VARCHAR(50) NOT NULL)
@@ -322,3 +302,74 @@ update CLASSES
 set BORE = BORE * 2.54;
 update CLASSES
 set DISPLACEMENT = DISPLACEMENT * 1.1;
+
+--11.10
+delete from OUTCOMES
+where SHIP in (
+	select SHIP from OUTCOMES
+	where RESULT = 'sunk'
+	group by SHIP
+	having count(SHIP) = 2
+)
+
+select * from OUTCOMES
+--11.10
+INSERT INTO outcomes VALUES ('Missouri','Surigao Strait', 'sunk'),
+('Missouri','North Cape', 'sunk'),
+('Missouri','North Atlantic', 'ok');
+
+--11.11 - first try wrong
+with BattleCountryParticipated as (
+	select distinct BATTLE, COUNTRY from OUTCOMES
+	inner join SHIPS on OUTCOMES.SHIP = SHIPS.NAME
+	inner join CLASSES on SHIPS.CLASS = CLASSES.CLASS
+)
+select BCP1.BATTLE as name
+from BattleCountryParticipated as BCP
+left join BattleCountryParticipated as BCP1 on BCP.COUNTRY = BCP1.COUNTRY
+where BCP.BATTLE = 'Guadalcanal' and BCP1.BATTLE != 'Guadalcanal'
+group by BCP1.BATTLE
+having count(BCP1.BATTLE) >= (
+	select count(BCP.BATTLE) from BattleCountryParticipated as BCP
+	left join BattleCountryParticipated as BCP2 on BCP.COUNTRY = BCP2.COUNTRY
+	where BCP2.BATTLE = 'Guadalcanal' and BCP.BATTLE = 'Guadalcanal'
+	group by BCP.BATTLE
+);
+--11.12
+select cls.COUNTRY, count(distinct outc.battle) as num_battles from CLASSES AS cls
+left join SHIPS as shp on shp.CLASS = cls.CLASS
+left join OUTCOMES as outc on outc.SHIP = shp.NAME
+group by cls.COUNTRY;
+
+--11.11 - second try
+with BattleCountryParticipated as (
+	select SHIP, BATTLE, COUNTRY from OUTCOMES
+	inner join SHIPS on OUTCOMES.SHIP = SHIPS.NAME
+	inner join CLASSES on SHIPS.CLASS = CLASSES.CLASS
+),
+Countires as (
+	select distinct COUNTRY
+	from OUTCOMES
+	inner join SHIPS on OUTCOMES.SHIP = SHIPS.NAME
+	inner join CLASSES on SHIPS.CLASS = CLASSES.CLASS
+),
+GuadalcanalCountries as (
+	select distinct COUNTRY
+	from OUTCOMES
+	inner join SHIPS on OUTCOMES.SHIP = SHIPS.NAME
+	inner join CLASSES on SHIPS.CLASS = CLASSES.CLASS
+	where BATTLE = 'Guadalcanal'
+),
+BattlesNoGuadalcanalCountries as (
+	select distinct BATTLE
+	from OUTCOMES
+	inner join SHIPS on OUTCOMES.SHIP = SHIPS.NAME
+	inner join CLASSES on SHIPS.CLASS = CLASSES.CLASS
+	where COUNTRY not in (select * from GuadalcanalCountries) 
+		  and BATTLE != 'Guadalcanal' 
+)
+select distinct BCP.BATTLE
+from BattleCountryParticipated as BCP
+where COUNTRY in (select * from GuadalcanalCountries) 
+	and BCP.BATTLE != 'Guadalcanal'
+	and BCP.BATTLE not in (select * from BattlesNoGuadalcanalCountries);
