@@ -311,12 +311,11 @@ where SHIP in (
 	group by SHIP
 	having count(SHIP) = 2
 )
-
-select * from OUTCOMES
 --11.10
 INSERT INTO outcomes VALUES ('Missouri','Surigao Strait', 'sunk'),
 ('Missouri','North Cape', 'sunk'),
 ('Missouri','North Atlantic', 'ok');
+<<<<<<< HEAD
 
 --11.11 - first try wrong
 with BattleCountryParticipated as (
